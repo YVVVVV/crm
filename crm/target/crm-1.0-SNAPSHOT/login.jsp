@@ -11,6 +11,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
 <script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
 <script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
+
+
 </head>
 <body>
 	<div style="position: absolute; top: 0px; left: 0px; width: 60%;">
@@ -28,20 +30,68 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<form action="workbench/index.html" class="form-horizontal" role="form">
 				<div class="form-group form-group-lg">
 					<div style="width: 350px;">
-						<input class="form-control" type="text" placeholder="用户名">
+						<input class="form-control" type="text" placeholder="用户名" id="liginAct">
 					</div>
 					<div style="width: 350px; position: relative;top: 20px;">
-						<input class="form-control" type="password" placeholder="密码">
+						<input class="form-control" type="password" placeholder="密码" id="loginPwd">
 					</div>
 					<div class="checkbox"  style="position: relative;top: 30px; left: 10px;">
 						
-							<span id="msg"></span>
+							<span id="msg" style="color: red"></span>
 						
 					</div>
-					<button type="submit" class="btn btn-primary btn-lg btn-block"  style="width: 350px; position: relative;top: 45px;">登录</button>
+					<button type="button" id="submitBtn" class="btn btn-primary btn-lg btn-block"  style="width: 350px; position: relative;top: 45px;">登录</button>
 				</div>
 			</form>
 		</div>
 	</div>
+
+	<script>
+		$(function(){
+			$("#liginAct").val('');
+			$("#liginAct").focus();
+			$("#submitBtn").click(function (){
+				login();
+			});
+			$(window).keydown(function (event){
+				if(event.keyCode==13){
+
+					login();
+				}
+			});
+
+		});
+		function login(){
+			// alert("ok");
+
+			var loginAct =$.trim($("#liginAct").val());
+			var loginPwd =$.trim($("#loginPwd").val());
+
+				if(loginAct==""||loginPwd==""){
+					$("#msg").html("账号密码不能为空！");
+					return false;
+				}
+				$.ajax({
+					url:"settings/user/login.do",
+					data:{"loginAct":loginAct,"loginPwd":loginPwd},
+					type:"post",
+					dataType:"jasn",
+					success:function (data){
+
+						if(data.success){
+							window.location.href = "workbench/index.html";
+
+						}else{
+							$("#msg").html(data.msg);
+
+						}
+
+					}
+				});
+
+		}
+
+	</script>
+
 </body>
 </html>
