@@ -18,7 +18,7 @@ import java.util.Map;
 public class UserController extends HttpServlet {
 
     protected void service(HttpServletRequest request, HttpServletResponse response) throws SecurityException, ServletException, IOException {
-        System.out.println("进入控制器");
+        System.out.println("进入控制器111");
         String path = request.getServletPath();
         if("/settings/user/login.do".equals(path)){
 
@@ -28,20 +28,16 @@ public class UserController extends HttpServlet {
 
         }
 
-
     }
 
     private void login(HttpServletRequest request,HttpServletResponse response){
-        System.out.println("验证 ");
+        System.out.println("验证12312 ");
         String loginAct = request.getParameter("loginAct");
         String loginPwd = request.getParameter("loginPwd");
         loginPwd= MD5Util.getMD5(loginPwd);
         String ip = request.getRemoteAddr();
         System.out.println("-------------"+ip);
-
         UserService userService = (UserService) ServiceFactory.getService( new UserServiceImpl());
-
-
         try {
 
             tb_user user = userService.login(loginAct,loginPwd,ip);
@@ -56,7 +52,5 @@ public class UserController extends HttpServlet {
             map.put("msg",msg);
             PrintJson.printJsonObj(response,map);
         }
-
     }
-
 }

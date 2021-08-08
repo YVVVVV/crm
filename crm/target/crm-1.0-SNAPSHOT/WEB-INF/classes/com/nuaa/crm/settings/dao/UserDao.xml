@@ -5,7 +5,9 @@
 
 <mapper namespace="com.nuaa.crm.settings.dao.UserDao">
 	
-	
+	<select id="login" resultType="tb_user">
+        select * from tb_user where loginAct=#{loginAct} and loginPwd=#{loginPwd}
+    </select>
 	
 </mapper>
 
