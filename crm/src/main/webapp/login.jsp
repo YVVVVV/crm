@@ -48,6 +48,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 	<script>
 		$(function(){
+			if(window.top!=window){
+				window.top.location=window.location;
+			}
+
 			$("#liginAct").val("");
 			$("#liginAct").focus();
 			$("#submitBtn").click(function (){
