@@ -21,7 +21,7 @@ public class UserController extends HttpServlet {
         System.out.println("进入控制器111");
         String path = request.getServletPath();
         if("/settings/user/login.do".equals(path)){
-
+            login(request,response);
 
         }else if("/settings/user/login.do".equals(path)){
 
@@ -35,11 +35,11 @@ public class UserController extends HttpServlet {
         String loginAct = request.getParameter("loginAct");
         String loginPwd = request.getParameter("loginPwd");
         loginPwd= MD5Util.getMD5(loginPwd);
+
         String ip = request.getRemoteAddr();
         System.out.println("-------------"+ip);
         UserService userService = (UserService) ServiceFactory.getService( new UserServiceImpl());
         try {
-
             tb_user user = userService.login(loginAct,loginPwd,ip);
             request.getSession().setAttribute("user",user);
             PrintJson.printJsonFlag(response,true);

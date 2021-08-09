@@ -27,7 +27,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<div class="page-header">
 				<h1>登录</h1>
 			</div>
-			<form action="workbench/index.html" class="form-horizontal" role="form">
+			<form action="workbench/index.jsp" class="form-horizontal" role="form">
 				<div class="form-group form-group-lg">
 					<div style="width: 350px;">
 						<input class="form-control" type="text" placeholder="用户名" id="liginAct">
@@ -48,14 +48,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 	<script>
 		$(function(){
-			$("#liginAct").val('');
+			$("#liginAct").val("");
 			$("#liginAct").focus();
 			$("#submitBtn").click(function (){
 				login();
 			});
 			$(window).keydown(function (event){
 				if(event.keyCode==13){
-
 					login();
 				}
 			});
@@ -63,10 +62,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		});
 		function login(){
 			// alert("ok");
-
 			var loginAct =$.trim($("#liginAct").val());
 			var loginPwd =$.trim($("#loginPwd").val());
-
 				if(loginAct==""||loginPwd==""){
 					$("#msg").html("账号密码不能为空！");
 					return false;
@@ -75,19 +72,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					url:"settings/user/login.do",
 					data:{"loginAct":loginAct,"loginPwd":loginPwd},
 					type:"post",
-					dataType:"jasn",
+					dataType:"json",
 					success:function (data){
-
 						if(data.success){
-							window.location.href = "workbench/index.html";
-
+							window.location.href = "workbench/index.jsp";
 						}else{
 							$("#msg").html(data.msg);
-
 						}
 
 					}
-				});
+				})
 
 		}
 
