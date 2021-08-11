@@ -9,6 +9,7 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 	<typeAliases>
 		<!-- <typeAlias type="com.bjpowernode.mybatis.domain.Student" alias="student"/> -->
 		<package name="com/nuaa/crm/settings/domain"/>
+		<package name="com/nuaa/crm/workbench/domain"/>
 	</typeAliases>
 	
 	<environments default="development">
@@ -25,5 +26,6 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 	<mappers>
 		<!-- <mapper resource="com/bjpowernode/mybatis/dao/StudentDao.xml" /> -->
 		<package name="com/nuaa/crm/settings/dao"/>
+		<package name="com/nuaa/crm/workbench/dao"/>
 	</mappers>
 </configuration>

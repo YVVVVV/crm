@@ -8,6 +8,12 @@
 	<select id="login" resultType="tb_user">
         select * from tbl_user where loginAct=#{loginAct} and loginPwd=#{loginPwd}
     </select>
+
+    <select id="getUserList" resultType="tb_user">
+
+        select * from tbl_user
+
+    </select>
 	
 </mapper>
 

@@ -8,6 +8,7 @@ import com.nuaa.crm.utils.DateTimeUtil;
 import com.nuaa.crm.utils.SqlSessionUtil;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class UserServiceImpl implements UserService {
@@ -43,5 +44,13 @@ public class UserServiceImpl implements UserService {
             throw new LoginException("地址受限");
         }
         return user;
+    }
+
+    public List<tb_user> getUserList() {
+
+        List<tb_user> userList = userDao.getUserList();
+        return userList;
+
+
     }
 }

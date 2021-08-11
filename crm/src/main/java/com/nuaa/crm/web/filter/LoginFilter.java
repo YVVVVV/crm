@@ -19,9 +19,7 @@ public class LoginFilter implements Filter {
 
         String path =  req.getServletPath();
         if("/login.jsp".equals(path)||"/settings/user/login.do".equals(path)){
-
             filterChain.doFilter(servletRequest,servletResponse);
-
         }else{
 
             HttpSession session = req.getSession();

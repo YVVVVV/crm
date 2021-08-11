@@ -16,18 +16,19 @@
     <title>Title</title>
 </head>
 <body>
-$.ajax({
-url:"",
-data:{},
-type:"",
-dataType:"jasn",
-success:function (data){
+    $.ajax({
+    url:"",
+    data:{},
+    type:"",
+    dataType:"json",
+    success:function (data){
 
 
-}
-});
+    }
+    });
 
-
+    String createtime = DateTimeUtil.getSysTime();
+    String createby = ((tb_user) request.getSession().getAttribute("user")).getName();
 
 </body>
 </html>
