@@ -5,10 +5,70 @@
 
 <mapper namespace="com.nuaa.crm.workbench.dao.ActivityRemarkDao">
 	
-	<select id="login" resultType="ActivityRemark">
-        select * from Activity where loginAct=#{loginAct} and loginPwd=#{loginPwd}
+	<select id="getCountByAdis" resultType="int">
+        select count(*) from TBL_ACTIVITY_REMARK
+        where activityid in
+        <foreach collection="array" item="aid" open="(" separator="," close=")">
+            #{aid}
+        </foreach>
     </select>
-	
+
+    <delete id="deleteByAdis">
+
+        delete from TBL_ACTIVITY_REMARK
+        where activityid in
+        <foreach collection="array"  item="aid" open="(" separator="," close=")">
+            #{aid}
+        </foreach>
+
+    </delete>
+
+
+    <select id="getRemarkListByAid" resultType="ActivityRemark">
+
+        select * from TBL_ACTIVITY_REMARK where activityid=#{activityid}
+
+    </select>
+
+    <delete id="deleteRemark" >
+
+        delete from TBL_ACTIVITY_REMARK where id=#{activityId}
+
+    </delete>
+
+    <insert id="saveRemark">
+
+        insert into TBL_ACTIVITY_REMARK(
+             id,
+             notecontent,
+             createtime,
+             createby,
+             editflag,
+             activityid
+
+
+        )
+        values(
+                 #{id},
+                 #{notecontent},
+                 #{createtime},
+                 #{createby},
+                 #{editflag},
+                 #{activityid}
+
+        )
+
+    </insert>
+
+
+    <update id="updateRemark">
+
+        update TBL_ACTIVITY_REMARK set notecontent=#{notecontent},editby=#{editby},edittime=#{edittime},editflag=#{editflag}
+        where id=#{id}
+
+    </update>
+
+
 </mapper>
 
 

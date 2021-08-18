@@ -72,7 +72,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				type:"post",
 				dataType:"json",
 				success:function (data){
-					if(!data.success){
+					if(data.success){
+
+
+						// pageList($("#activityPage").bs_pagination('getOption', 'currentPage')
+						// 		,$("#activityPage").bs_pagination('getOption', 'rowsPerPage'));
+
+						pageList(1,$("#activityPage").bs_pagination('getOption', 'rowsPerPage'));
+
+
 						$("#activityAddForm")[0].reset();
 						$("#createActivityModal").modal("hide");
 					}else{
@@ -82,14 +90,166 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			})
 
 		})
-		pageList(1,2);
+
+		pageList(1,5);
+
 		$("#searchBtn").click(function (){
-			pageList(1,2);
+
+			$("#hidden-name").val($.trim($("#search-name").val()));
+			$("#hidden-owner").val($.trim($("#search-owner").val()));
+			$("#hidden-startTime").val($.trim($("#search-startTime").val()));
+			$("#hidden-endTime").val($.trim($("#search-endTime").val()));
+
+
+
+		})
+
+		$("#searchBtn").click(function (){
+			pageList(1,$("#activityPage").bs_pagination('getOption', 'rowsPerPage'));
+		})
+
+		$("#qx").click(function (){
+
+			$("input[name=xz]").prop("checked",this.checked);
+
+		})
+		// $("#input[name=xz]").click(function (){
+		//
+		// 	alert();
+		// })
+		$("#activityBody").on("click",$("#input[name=xz]"),function (){
+
+			$("#qx").prop("checked",$("input[name=xz]").length==$("input[name=xz]:checked").length);
+
+		})
+
+		$("#deleteBtn").click(function (){
+			var $xz = $("input[name=xz]:checked");
+			if($xz.length==0){
+				alert("请选择要删除的对象");
+			}else{
+
+				if(confirm("确定删除所选？")){
+
+					var param = "";
+					for(var i=0;i<$xz.length;i++){
+						param +="id="+$($xz[i]).val();
+						if(i<$xz.length-1){
+							param +="&";
+						}
+					}
+					$.ajax({
+						url:"workbench/activity/delete.do",
+						data:param,
+						type:"post",
+						dataType:"json",
+						success:function (data){
+							if(data.success){
+
+								pageList(1,$("#activityPage").bs_pagination('getOption', 'rowsPerPage'));
+
+							}else{
+
+								alert("删除失败");
+
+							}
+
+						}
+					});
+				}
+
+
+			}
+
+		})
+
+		$("#editBtn").click(function (){
+
+			var $xz = $("input[name=xz]:checked");
+
+			if($xz.length==0){
+
+				alert("请选择修改对象");
+
+			}else if($xz.length>1){
+
+				alert("只能选择一条记录");
+
+			}else{
+
+				var id = $xz.val();
+				$.ajax({
+					url:"workbench/activity/getUserListAndActivity.do",
+					data:{
+						"id":id
+					},
+					type:"get",
+					dataType:"json",
+					success:function (data){
+
+						var html = "<option></option>";
+						$.each(data.uList,function (i,n){
+							html+="<option value='"+n.id+"'>"+n.name+"</option>";
+						})
+						$("#edit-marketActivityOwner").html(html);
+						$("#edit-id").val(data.a.id);
+						$("#edit-marketActivityOwner").val(data.a.owner);
+						$("#edit-marketActivityName").val(data.a.name);
+						$("#edit-startTime").val(data.a.startdate);
+						$("#edit-endTime").val(data.a.enddate);
+						$("#edit-cost").val(data.a.cost);
+						$("#edit-describe").val(data.a.description);
+
+						$("#editActivityModal").modal("show");
+
+					}
+				})
+
+			}
+
+		})
+
+		$("#updateBtn").click(function (){
+
+			$.ajax({
+				url:"workbench/activity/update.do",
+				data:{
+					"id":$.trim($("#edit-id").val()),
+					"owner":$.trim($("#edit-marketActivityOwner").val()),
+					"name":$.trim($("#edit-marketActivityName").val()),
+					"startdate":$.trim($("#edit-startTime").val()),
+					"enddate":$.trim($("#edit-endTime").val()),
+					"cost":$.trim($("#edit-cost").val()),
+					"description":$.trim($("#edit-describe").val())
+				},
+				type:"post",
+				dataType:"json",
+				success:function (data){
+
+					if(data.success){
+						pageList($("#activityPage").bs_pagination('getOption', 'currentPage')
+								,$("#activityPage").bs_pagination('getOption', 'rowsPerPage'));
+
+						$("#editActivityModal").modal("hide");
+					}else{
+						alert("修改市场活动失败");
+					}
+				}
+			})
+
 		})
 
 	});
 
 	function pageList(pageNo,pageSize){
+
+		$("#qx").prop("checked",false);
+
+		$("#search-name").val($.trim($("#hidden-name").val()));
+		$("#search-owner").val($.trim($("#hidden-owner").val()));
+		$("#search-startTime").val($.trim($("#hidden-startTime").val()));
+		$("#search-endTime").val($.trim($("#hidden-endTime").val()));
+
 		// alert("123");
 		$.ajax({
 			url:"workbench/activity/pageList.do",
@@ -107,8 +267,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				var html="";
 				$.each(data.dataList,function (i,n){
 					html+= '<tr class="active">';
-					html+= '<td><input type="checkbox" value="'+n.id+'"/></td>';
-					html+= '<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href=\'workbench/activity/detail.html\';">'+n.name+'</a></td>';
+					html+= '<td><input type="checkbox" name="xz" value="'+n.id+'"/></td>';
+					html+= '<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href=\'workbench/activity/detail.do?id='+n.id+'\';">'+n.name+'</a></td>';
                     html+= '<td>'+n.owner+'</td>';
 					html+= '<td>'+n.startdate+'</td>';
 					html+= '<td>'+n.enddate+'</td>';
@@ -135,6 +295,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					}
 				});
 
+
+
 			}
 		});
 
@@ -143,6 +305,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </script>
 </head>
 <body>
+
+	<input type="hidden" id="hidden-name"/>
+	<input type="hidden" id="hidden-owner"/>
+	<input type="hidden" id="hidden-startdate"/>
+	<input type="hidden" id="hidden-enddate"/>
 
 	<!-- 创建市场活动的模态窗口 -->
 	<div class="modal fade" id="createActivityModal" role="dialog">
@@ -219,7 +386,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<div class="modal-body">
 				
 					<form class="form-horizontal" role="form">
-					
+
+						<input type="hidden" id="edit-id">
+
 						<div class="form-group">
 							<label for="edit-marketActivityOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
@@ -229,32 +398,32 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							</div>
                             <label for="edit-marketActivityName" class="col-sm-2 control-label">名称<span style="font-size: 15px; color: red;">*</span></label>
                             <div class="col-sm-10" style="width: 300px;">
-                                <input type="text" class="form-control" id="edit-marketActivityName" value="发传单">
+                                <input type="text" class="form-control" id="edit-marketActivityName">
                             </div>
 						</div>
 
 						<div class="form-group">
 							<label for="edit-startTime" class="col-sm-2 control-label">开始日期</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="edit-startTime" value="2020-10-10">
+								<input type="text" class="form-control time" id="edit-startTime">
 							</div>
 							<label for="edit-endTime" class="col-sm-2 control-label">结束日期</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="edit-endTime" value="2020-10-20">
+								<input type="text" class="form-control time" id="edit-endTime">
 							</div>
 						</div>
 						
 						<div class="form-group">
 							<label for="edit-cost" class="col-sm-2 control-label">成本</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="edit-cost" value="5,000">
+								<input type="text" class="form-control" id="edit-cost">
 							</div>
 						</div>
 						
 						<div class="form-group">
 							<label for="edit-describe" class="col-sm-2 control-label">描述</label>
 							<div class="col-sm-10" style="width: 81%;">
-								<textarea class="form-control" rows="3" id="edit-describe">市场活动Marketing，是指品牌主办或参与的展览会议与公关市场活动，包括自行主办的各类研讨会、客户交流会、演示会、新产品发布会、体验会、答谢会、年会和出席参加并布展或演讲的展览会、研讨会、行业交流会、颁奖典礼等</textarea>
+								<textarea class="form-control" rows="3" id="edit-describe"></textarea>
 							</div>
 						</div>
 						
@@ -263,7 +432,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal">更新</button>
+					<button type="button" class="btn btn-primary" id="updateBtn">更新</button>
 				</div>
 			</div>
 		</div>
@@ -320,8 +489,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<div class="btn-toolbar" role="toolbar" style="background-color: #F7F7F7; height: 50px; position: relative;top: 5px;">
 				<div class="btn-group" style="position: relative; top: 18%;">
 				  <button type="button" class="btn btn-primary" id="addBtn"><span class="glyphicon glyphicon-plus"></span> 创建</button>
-				  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editActivityModal"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
-				  <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+				  <button type="button" class="btn btn-default" id="editBtn"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
+				  <button type="button" class="btn btn-danger" id="deleteBtn"><span class="glyphicon glyphicon-minus"></span> 删除</button>
 				</div>
 				
 			</div>
@@ -329,7 +498,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<table class="table table-hover">
 					<thead>
 						<tr style="color: #B3B3B3;">
-							<td><input type="checkbox" /></td>
+							<td><input type="checkbox" id="qx"/></td>
 							<td>名称</td>
                             <td>所有者</td>
 							<td>开始日期</td>
@@ -339,14 +508,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<tbody id="activityBody">
 <%--						<tr class="active">--%>
 <%--							<td><input type="checkbox" /></td>--%>
-<%--							<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='workbench/activity/detail.html';">发传单</a></td>--%>
+<%--							<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='workbench/activity/detail.jsp';">发传单</a></td>--%>
 <%--                            <td>zhangsan</td>--%>
 <%--							<td>2020-10-10</td>--%>
 <%--							<td>2020-10-20</td>--%>
 <%--						</tr>--%>
 <%--                        <tr class="active">--%>
 <%--                            <td><input type="checkbox" /></td>--%>
-<%--                            <td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.html';">发传单</a></td>--%>
+<%--                            <td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.jsp';">发传单</a></td>--%>
 <%--                            <td>zhangsan</td>--%>
 <%--                            <td>2020-10-10</td>--%>
 <%--                            <td>2020-10-20</td>--%>

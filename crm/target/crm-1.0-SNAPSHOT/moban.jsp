@@ -18,10 +18,14 @@
 <body>
     $.ajax({
     url:"",
-    data:{},
+    data:{
+
+
+    },
     type:"",
     dataType:"json",
     success:function (data){
+
 
 
     }
